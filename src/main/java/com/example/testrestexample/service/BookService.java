@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BookService {
-
+public class BookService{
    private final BookRepository bookRepository;
 
    public Optional<Book> getBookById(Long bookId){
@@ -22,29 +21,29 @@ public class BookService {
 
    public Optional<Book> updateBook(Long bookId, Book book){
       return bookRepository.findById(bookId)
-            .map(existedBook -> {
-               existedBook.setAuthor(book.getAuthor());
+            .map(existedBook->{
                existedBook.setTitle(book.getTitle());
+               existedBook.setAuthor(book.getAuthor());
                return bookRepository.save(existedBook);
             });
    }
 
-   public Optional<Book> partiallyUpdateBook(Long bookId, Book book){
+   public Optional<Book> partialUpdateBook(Long bookId, Book book){
       return bookRepository.findById(bookId)
             .map(existedBook->{
-               if(book.getAuthor() != null)
-                  existedBook.setAuthor(book.getAuthor());
-               if(book.getTitle() != null)
+               if(book.getTitle()!=null)
                   existedBook.setTitle(book.getTitle());
+               if(book.getAuthor()!=null)
+                  existedBook.setAuthor(book.getAuthor());
                return bookRepository.save(existedBook);
             });
    }
 
-   public boolean deleteBook(Long bookId){
+   public boolean deleteBookById(Long bookId){
       return bookRepository.findById(bookId)
-            .map(book->{
-               bookRepository.delete(book);
+            .map(existedBook->{
+               bookRepository.delete(existedBook);
                return true;
-            }).orElse( false);
+            }).orElse(false);
    }
 }

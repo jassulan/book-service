@@ -17,37 +17,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
-public class BookController {
-
+public class BookController{
    private final BookService bookService;
 
    @GetMapping("/{bookId}")
-   public ResponseEntity<Book> getBookById(@PathVariable Long bookId){
+   public ResponseEntity<Book> getBook(@PathVariable Long bookId){
       return ResponseEntity.of(bookService.getBookById(bookId));
    }
 
-   @PostMapping("/")
+   @PostMapping("")
    public ResponseEntity<Book> createBook(@RequestBody Book book){
       return ResponseEntity.ok(bookService.createBook(book));
    }
 
    @PutMapping("/{bookId}")
    public ResponseEntity<Book> updateBook(@PathVariable Long bookId, @RequestBody Book book){
-      return bookService.updateBook(bookId, book)
+      return bookService.updateBook(bookId,book)
             .map(ResponseEntity::ok)
             .orElseGet(()->ResponseEntity.notFound().build());
    }
 
-   @PatchMapping("/bookId")
-   public ResponseEntity<Book> partialUpdate(@PathVariable Long bookId, @RequestBody Book book) {
-      return bookService.partiallyUpdateBook(bookId, book)
+   @PatchMapping("/{bookId}")
+   public ResponseEntity<Book> partialUpdateBook(@PathVariable Long bookId, @RequestBody Book book){
+      return bookService.partialUpdateBook(bookId,book)
             .map(ResponseEntity::ok)
             .orElseGet(()->ResponseEntity.notFound().build());
    }
 
    @DeleteMapping("/{bookId}")
-   public ResponseEntity<String> deleteBook(@RequestBody Long bookId){
-      if(bookService.deleteBook(bookId))
+   public ResponseEntity<String> deleteBook(@PathVariable Long bookId)
+   {
+      if(bookService.deleteBookById(bookId))
          return ResponseEntity.noContent().build();
       return ResponseEntity.notFound().build();
    }
