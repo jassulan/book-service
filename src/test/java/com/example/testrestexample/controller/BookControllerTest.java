@@ -9,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -58,15 +62,18 @@ class BookControllerTest {
 
    @Test
    void getAllBooks() throws Exception {
+      Pageable pageable = PageRequest.of(0, 10);
       List<Book> books = Arrays.asList(book);
-      when(bookService.getAllBooks()).thenReturn(books);
+      Page<Book> bookPage = new PageImpl<>(books, pageable, books.size());
 
-      mockMvc.perform(get("/books"))
+      when(bookService.getAllBooks(0, 10)).thenReturn(bookPage);
+
+      mockMvc.perform(get("/books?page=0&size=10"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].title").value("Clean Code"));
+            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andExpect(jsonPath("$.content[0].title").value("Clean Code"));
 
-      verify(bookService, times(1)).getAllBooks();
+      verify(bookService, times(1)).getAllBooks(0, 10);
    }
 
    @Test

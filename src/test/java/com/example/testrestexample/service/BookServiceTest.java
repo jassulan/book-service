@@ -13,6 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,13 +54,16 @@ class BookServiceTest {
    @Test
    void getAllBooks() {
       List<Book> books = Arrays.asList(book);
-      when(bookRepository.findAll()).thenReturn(books);
+      Pageable pageable = PageRequest.of(0, 10);
+      Page<Book> bookPage = new PageImpl<>(books, pageable, books.size());
 
-      List<Book> result = bookService.getAllBooks();
+      when(bookRepository.findAll(pageable)).thenReturn(bookPage);
 
-      assertEquals(1, result.size());
-      assertEquals("Clean Code", result.get(0).getTitle());
-      verify(bookRepository, times(1)).findAll();
+      Page<Book> result = bookService.getAllBooks(0, 10);
+
+      assertEquals(1, result.getTotalElements());
+      assertEquals("Clean Code", result.getContent().get(0).getTitle());
+      verify(bookRepository, times(1)).findAll(pageable);
    }
 
    @Test

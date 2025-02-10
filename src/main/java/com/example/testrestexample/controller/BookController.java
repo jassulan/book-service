@@ -7,6 +7,7 @@ import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -28,9 +30,11 @@ public class BookController{
    private final MessageSource messageSource;
 
    @GetMapping("")
-   public ResponseEntity<List<Book>> getAllBooks() {
-      log.info("Received request to get all books");
-      return ResponseEntity.ok(bookService.getAllBooks());
+   public ResponseEntity<Page<Book>> getAllBooks(
+         @RequestParam(defaultValue = "0") int page,
+         @RequestParam(defaultValue = "10") int size) {
+      log.info("Received request to get paginated books: page={}, size={}", page, size);
+      return ResponseEntity.ok(bookService.getAllBooks(page, size));
    }
 
    @GetMapping("/{bookId}")

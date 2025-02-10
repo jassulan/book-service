@@ -8,6 +8,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -17,8 +20,10 @@ public class BookService{
    private final BookRepository bookRepository;
    private final MessageSource messageSource;
 
-   public List<Book> getAllBooks() {
-      return (List<Book>) bookRepository.findAll();
+   public Page<Book> getAllBooks(int page, int size) {
+      log.info("Fetching books with pagination: page={}, size={}", page, size);
+      Pageable pageable = PageRequest.of(page, size);
+      return bookRepository.findAll(pageable);
    }
 
    public Optional<Book> getBookById(Long bookId){
