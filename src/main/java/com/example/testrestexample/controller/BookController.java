@@ -2,6 +2,7 @@ package com.example.testrestexample.controller;
 
 import com.example.testrestexample.model.Book;
 import com.example.testrestexample.service.BookService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookController{
    private final BookService bookService;
+
+   @GetMapping("")
+   public ResponseEntity<List<Book>> getAllBooks() {
+      return ResponseEntity.ok(bookService.getAllBooks());
+   }
 
    @GetMapping("/{bookId}")
    public ResponseEntity<Book> getBook(@PathVariable Long bookId){

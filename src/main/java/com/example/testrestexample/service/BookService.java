@@ -2,6 +2,7 @@ package com.example.testrestexample.service;
 
 import com.example.testrestexample.model.Book;
 import com.example.testrestexample.repository.BookRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BookService{
    private final BookRepository bookRepository;
+
+   public List<Book> getAllBooks() {
+      return (List<Book>) bookRepository.findAll();
+   }
 
    public Optional<Book> getBookById(Long bookId){
       return bookRepository.findById(bookId);
