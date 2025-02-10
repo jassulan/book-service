@@ -22,7 +22,7 @@
       </encoder>
    </appender>
 
-   <logger name="com.example.testrestexample" level="DEBUG"/>
+   <logger name="com.example.bookservice" level="DEBUG"/>
    <root level="INFO">
       <appender-ref ref="CONSOLE"/>
       <appender-ref ref="FILE"/>

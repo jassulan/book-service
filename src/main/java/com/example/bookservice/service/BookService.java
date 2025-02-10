@@ -1,8 +1,7 @@
-package com.example.testrestexample.service;
+package com.example.bookservice.service;
 
-import com.example.testrestexample.model.Book;
-import com.example.testrestexample.repository.BookRepository;
-import java.util.List;
+import com.example.bookservice.model.Book;
+import com.example.bookservice.repository.BookRepository;
 import java.util.Locale;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

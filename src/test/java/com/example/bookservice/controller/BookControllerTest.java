@@ -1,7 +1,7 @@
-package com.example.testrestexample.controller;
+package com.example.bookservice.controller;
 
-import com.example.testrestexample.model.Book;
-import com.example.testrestexample.service.BookService;
+import com.example.bookservice.model.Book;
+import com.example.bookservice.service.BookService;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.example.testrestexample;
+package com.example.bookservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,10 +10,10 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import java.util.Locale;
 
 @SpringBootApplication
-public class TestRestExampleApplication {
+public class BookServiceApplication {
 
    public static void main(String[] args) {
-      SpringApplication.run(TestRestExampleApplication.class, args);
+      SpringApplication.run(BookServiceApplication.class, args);
    }
 
    @Bean
