@@ -2,6 +2,7 @@ package com.example.testrestexample.service;
 
 import com.example.testrestexample.model.Book;
 import com.example.testrestexample.repository.BookRepository;
+import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,10 +63,10 @@ class BookServiceTest {
    void createBook() {
       when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-      Book result = bookService.createBook(book);
+      String result = bookService.createBook(book, Locale.ENGLISH);
 
       assertNotNull(result);
-      assertEquals("Clean Code", result.getTitle());
+      assertTrue(result.contains("Clean Code"));
       verify(bookRepository, times(1)).save(any(Book.class));
    }
 
@@ -90,7 +91,7 @@ class BookServiceTest {
    void deleteBookById() {
       when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-      boolean result = bookService.deleteBookById(1L);
+      boolean result = bookService.deleteBookById(1L, Locale.ENGLISH);
 
       assertTrue(result);
       verify(bookRepository, times(1)).findById(1L);
@@ -101,7 +102,7 @@ class BookServiceTest {
    void deleteNotExistedBookById() {
       when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
-      boolean result = bookService.deleteBookById(1L);
+      boolean result = bookService.deleteBookById(1L, Locale.ENGLISH);
 
       assertFalse(result);
       verify(bookRepository, times(1)).findById(1L);

@@ -2,6 +2,7 @@ package com.example.testrestexample.controller;
 
 import com.example.testrestexample.model.Book;
 import com.example.testrestexample.service.BookService;
+import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,34 +71,35 @@ class BookControllerTest {
 
    @Test
    void createBook() throws Exception {
-      when(bookService.createBook(any(Book.class))).thenReturn(book);
+      when(bookService.createBook(any(Book.class), eq(Locale.ENGLISH))).thenReturn("Book created successfully");
 
       mockMvc.perform(post("/books")
+                  .header("Accept-Language", "en")
                   .contentType(MediaType.APPLICATION_JSON)
                   .content("{\"title\":\"Clean Code\",\"author\":\"Robert C. Martin\"}"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.title").value("Clean Code"));
+            .andExpect(content().string("Book created successfully"));
 
-      verify(bookService, times(1)).createBook(any(Book.class));
+      verify(bookService, times(1)).createBook(any(Book.class), eq(Locale.ENGLISH));
    }
 
    @Test
    void deleteBook() throws Exception {
-      when(bookService.deleteBookById(1L)).thenReturn(true);
+      when(bookService.deleteBookById(1L, Locale.ENGLISH)).thenReturn(true);
 
-      mockMvc.perform(delete("/books/1"))
+      mockMvc.perform(delete("/books/1").header("Accept-Language", "en"))
             .andExpect(status().isNoContent());
 
-      verify(bookService, times(1)).deleteBookById(1L);
+      verify(bookService, times(1)).deleteBookById(1L, Locale.ENGLISH);
    }
 
    @Test
    void deleteNotExistedBook() throws Exception {
-      when(bookService.deleteBookById(1L)).thenReturn(false);
+      when(bookService.deleteBookById(1L, Locale.ENGLISH)).thenReturn(false);
 
-      mockMvc.perform(delete("/books/1"))
+      mockMvc.perform(delete("/books/1").header("Accept-Language", "en"))
             .andExpect(status().isNotFound());
 
-      verify(bookService, times(1)).deleteBookById(1L);
+      verify(bookService, times(1)).deleteBookById(1L, Locale.ENGLISH);
    }
 }
