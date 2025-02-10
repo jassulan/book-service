@@ -3,8 +3,10 @@ package com.example.testrestexample.controller;
 import com.example.testrestexample.model.Book;
 import com.example.testrestexample.service.BookService;
 import java.util.List;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookController{
    private final BookService bookService;
+   private final MessageSource messageSource;
 
    @GetMapping("")
    public ResponseEntity<List<Book>> getAllBooks() {
@@ -36,9 +40,9 @@ public class BookController{
    }
 
    @PostMapping("")
-   public ResponseEntity<Book> createBook(@RequestBody Book book){
-      log.info("Received request to create a book: {}", book);
-      return ResponseEntity.ok(bookService.createBook(book));
+   public ResponseEntity<String> createBook(@RequestBody Book book,
+         @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+      return ResponseEntity.ok(bookService.createBook(book, locale));
    }
 
    @PutMapping("/{bookId}")
@@ -64,13 +68,10 @@ public class BookController{
    }
 
    @DeleteMapping("/{bookId}")
-   public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
-      log.info("Received request to delete book with id {}", bookId);
-      if (bookService.deleteBookById(bookId)) {
-         log.info("Successfully deleted book with id {}", bookId);
-         return ResponseEntity.noContent().build();
+   public ResponseEntity<String> deleteBook(@PathVariable Long bookId, @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+      if (bookService.deleteBookById(bookId, locale)) {
+         return ResponseEntity.ok(messageSource.getMessage("book.deleted", new Object[]{bookId}, locale));
       }
-      log.warn("Book with id {} not found", bookId);
-      return ResponseEntity.notFound().build();
+      return ResponseEntity.status(404).body(messageSource.getMessage("book.not.found", new Object[]{bookId}, locale));
    }
 }
