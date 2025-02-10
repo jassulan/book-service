@@ -1,77 +1,49 @@
 package com.example.bookservice.controller;
 
-import com.example.bookservice.model.Book;
+import com.example.bookservice.dto.BookRequestDTO;
+import com.example.bookservice.dto.BookResponseDTO;
 import com.example.bookservice.service.BookService;
-import java.util.Locale;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Locale;
 
 @Slf4j
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
-public class BookController{
+public class BookController {
    private final BookService bookService;
    private final MessageSource messageSource;
 
-   @GetMapping("")
-   public ResponseEntity<Page<Book>> getAllBooks(
+   @GetMapping
+   public ResponseEntity<Page<BookResponseDTO>> getAllBooks(
          @RequestParam(defaultValue = "0") int page,
          @RequestParam(defaultValue = "10") int size) {
-      log.info("Received request to get paginated books: page={}, size={}", page, size);
       return ResponseEntity.ok(bookService.getAllBooks(page, size));
    }
 
    @GetMapping("/{bookId}")
-   public ResponseEntity<Book> getBook(@PathVariable Long bookId){
-      log.info("Received request to get book with id {}", bookId);
+   public ResponseEntity<BookResponseDTO> getBook(@PathVariable Long bookId) {
       return ResponseEntity.of(bookService.getBookById(bookId));
    }
 
-   @PostMapping("")
-   public ResponseEntity<String> createBook(@RequestBody Book book,
+   @PostMapping
+   public ResponseEntity<String> createBook(
+         @RequestBody @Valid BookRequestDTO bookDTO,
          @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
-      return ResponseEntity.ok(bookService.createBook(book, locale));
-   }
-
-   @PutMapping("/{bookId}")
-   public ResponseEntity<Book> updateBook(@PathVariable Long bookId, @RequestBody Book book) {
-      log.info("Received request to update book with id {}", bookId);
-      return bookService.updateBook(bookId, book)
-            .map(updatedBook -> {
-               log.info("Successfully updated book with id {}", bookId);
-               return ResponseEntity.ok(updatedBook);
-            })
-            .orElseGet(() -> {
-               log.warn("Book with id {} not found", bookId);
-               return ResponseEntity.notFound().build();
-            });
-   }
-
-   @PatchMapping("/{bookId}")
-   public ResponseEntity<Book> partialUpdateBook(@PathVariable Long bookId, @RequestBody Book book){
-      log.info("Received request to partial update book with id {}", bookId);
-      return bookService.partialUpdateBook(bookId,book)
-            .map(ResponseEntity::ok)
-            .orElseGet(()->ResponseEntity.notFound().build());
+      return ResponseEntity.ok(bookService.createBook(bookDTO, locale));
    }
 
    @DeleteMapping("/{bookId}")
-   public ResponseEntity<String> deleteBook(@PathVariable Long bookId, @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+   public ResponseEntity<String> deleteBook(
+         @PathVariable Long bookId,
+         @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
       if (bookService.deleteBookById(bookId, locale)) {
          return ResponseEntity.ok(messageSource.getMessage("book.deleted", new Object[]{bookId}, locale));
       }
