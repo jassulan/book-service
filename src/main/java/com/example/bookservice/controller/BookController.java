@@ -3,6 +3,8 @@ package com.example.bookservice.controller;
 import com.example.bookservice.dto.BookRequestDTO;
 import com.example.bookservice.dto.BookResponseDTO;
 import com.example.bookservice.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +19,12 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
+@Tag(name = "Book Controller", description = "API for managing books")
 public class BookController {
    private final BookService bookService;
    private final MessageSource messageSource;
 
+   @Operation(summary = "Get all books", description = "Retrieves a paginated list of books")
    @GetMapping
    public ResponseEntity<Page<BookResponseDTO>> getAllBooks(
          @RequestParam(defaultValue = "0") int page,
@@ -28,11 +32,13 @@ public class BookController {
       return ResponseEntity.ok(bookService.getAllBooks(page, size));
    }
 
+   @Operation(summary = "Get book by ID", description = "Retrieves details of a book by its ID")
    @GetMapping("/{bookId}")
    public ResponseEntity<BookResponseDTO> getBook(@PathVariable Long bookId) {
       return ResponseEntity.of(bookService.getBookById(bookId));
    }
 
+   @Operation(summary = "Create a new book", description = "Creates a book with the provided details")
    @PostMapping
    public ResponseEntity<String> createBook(
          @RequestBody @Valid BookRequestDTO bookDTO,
@@ -40,6 +46,7 @@ public class BookController {
       return ResponseEntity.ok(bookService.createBook(bookDTO, locale));
    }
 
+   @Operation(summary = "Delete book", description = "Deletes a book by its ID")
    @DeleteMapping("/{bookId}")
    public ResponseEntity<String> deleteBook(
          @PathVariable Long bookId,

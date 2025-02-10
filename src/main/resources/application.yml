@@ -1,29 +1,45 @@
 spring:
    application:
       name: TestRestExample
+
    datasource:
       url: jdbc:h2:mem:testdb
       driver-class-name: org.h2.Driver
       username: sa
       password:
+      hikari:
+         maximum-pool-size: 10  # Optimize connection pooling
+         minimum-idle: 2
+         idle-timeout: 30000
+         max-lifetime: 1800000
+
    jpa:
       database-platform: org.hibernate.dialect.H2Dialect
       hibernate:
-         ddl-auto: none
+         ddl-auto: update  # Allows schema changes in development
       show-sql: true
+      properties:
+         hibernate:
+            format_sql: true  # Beautify SQL logs
+
    sql:
       init:
-         mode: always
+         mode: always  # Run schema.sql & data.sql automatically
+
    messages:
       basename: messages
       encoding: UTF-8
 
+springdoc:
+   api-docs:
+      enabled: true
+   swagger-ui:
+      path: /swagger-ui.html
+      operationsSorter: method
 
 logging:
    level:
       root: INFO
-      com.example.testrestexample: DEBUG
+      com.example.bookservice: DEBUG
    pattern:
       console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
-
-
