@@ -81,8 +81,6 @@ java -jar target/book-service-0.0.1-SNAPSHOT.jar
 Once running, access **Swagger UI** at:  
 👉 **`http://localhost:8080/swagger-ui`**  
 
-```
-
 ---
 
 ## **📜 License**
